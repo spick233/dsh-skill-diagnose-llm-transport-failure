@@ -1,5 +1,7 @@
 # diagnose-llm-transport-failure
 
+[![check](https://github.com/spick233/dsh-skill-diagnose-llm-transport-failure/actions/workflows/check.yml/badge.svg)](https://github.com/spick233/dsh-skill-diagnose-llm-transport-failure/actions/workflows/check.yml)
+
 **English** | [中文](README.zh.md)
 
 A [DSH](https://platform.deepseek.com) skill for the moment a model request dies with:
