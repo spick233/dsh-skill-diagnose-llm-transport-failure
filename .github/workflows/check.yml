@@ -1,0 +1,26 @@
+name: check
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Syntax
+        run: |
+          node --check scripts/tls-probe.mjs
+          node --check scripts/find-transport-failures.mjs
+      - name: Usage contract
+        run: |
+          node scripts/tls-probe.mjs; test $? -eq 2
+          node scripts/find-transport-failures.mjs --dir /nonexistent; test $? -eq 2
+      - name: Log summarizer on an empty tree
+        run: |
+          mkdir -p /tmp/logs
+          node scripts/find-transport-failures.mjs --dir /tmp/logs; test $? -eq 0
