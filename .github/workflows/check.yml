@@ -17,10 +17,22 @@ jobs:
           node --check scripts/tls-probe.mjs
           node --check scripts/find-transport-failures.mjs
       - name: Usage contract
+        # A non-zero exit is the assertion here, so capture it instead of letting
+        # the runner's `bash -e` abort before the comparison runs.
         run: |
-          node scripts/tls-probe.mjs; test $? -eq 2
-          node scripts/find-transport-failures.mjs --dir /nonexistent; test $? -eq 2
+          expect_exit() {
+            want=$1
+            shift
+            got=0
+            "$@" || got=$?
+            if [ "$got" -ne "$want" ]; then
+              echo "FAIL: expected exit $want, got $got for: $*"
+              exit 1
+            fi
+          }
+          expect_exit 2 node scripts/tls-probe.mjs
+          expect_exit 2 node scripts/find-transport-failures.mjs --dir /nonexistent
       - name: Log summarizer on an empty tree
         run: |
           mkdir -p /tmp/logs
-          node scripts/find-transport-failures.mjs --dir /tmp/logs; test $? -eq 0
+          node scripts/find-transport-failures.mjs --dir /tmp/logs
